@@ -20,7 +20,6 @@ public class MainActivity extends AppCompatActivity {
     // private properties
     private static final int SERVER_PORT = 6000;
     private String SERVER_IP = "192.168.0.11";
-    private Socket socket;
     private EditText messageEditText;
     private EditText serverIpEditText;
     private String messageSend = "";
@@ -58,14 +57,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
 
-        if (socket != null) {
-            try {
-                socket.close();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        }
-
         if (clientThread != null) {
             try {
                 clientThread.join();
@@ -88,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
         public void run() {
             try {
                 InetAddress serverAddr = InetAddress.getByName(SERVER_IP);
-                socket = new Socket(serverAddr, SERVER_PORT);
+                Socket socket = new Socket(serverAddr, SERVER_PORT);
                 if (socket != null) {
                     // socket has been created
                     System.out.println("Socket has been created.");
@@ -99,9 +90,10 @@ public class MainActivity extends AppCompatActivity {
                         PrintWriter printWriter = new PrintWriter(bufferedWriter, true);
 
                         printWriter.println(messageSend);
-
                         System.out.println("Message has been sent out.");
 
+                        socket.close();
+                        socket = null;
                     } catch (IOException ex) {
                         ex.printStackTrace();
                     }
