@@ -93,7 +93,6 @@ public class MainActivity extends AppCompatActivity {
                         System.out.println("Message has been sent out.");
 
                         socket.close();
-                        socket = null;
                     } catch (IOException ex) {
                         ex.printStackTrace();
                     }
